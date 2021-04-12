@@ -10,6 +10,9 @@ if [[ -n $PULP_ADMIN_PASSWORD ]]; then
     pulpcore-manager reset-admin-password --password ${PULP_ADMIN_PASSWORD}
 fi
 
+echo "[INFO] handling any needed checksum migration"
+pulpcore-manager handle-artifact-checksums
+
 echo "[INFO] Collecting static files"
 pulpcore-manager collectstatic --noinput
 
