@@ -15,6 +15,7 @@ else
 	cache_tag=$(TAG)
 endif
 
+
 images: build-pulp-core \
         build-pulp-api \
         build-pulp-content \
@@ -34,3 +35,13 @@ build-%:
 release-%:
 	$(eval IMAGE := $(patsubst release-%,%,$@))
 	cd $(IMAGE) && docker push $(prefix)$(IMAGE):$(TAG)
+
+tmp_image=tmp-pulp-core-build
+update-requirements:
+	cd pulp-core && \
+	sed -i 's/\(django-storages\)=/\1[boto3]=/; /^## The following requirements.*/,$$d' requirements.txt && \
+	docker build --target build -t $(tmp_image) . && \
+	docker run --rm $(tmp_image) /opt/pulp/bin/pip freeze --all -l \
+		-r /opt/pulp/pulp-requirements.txt > requirements.txt
+	docker rmi $(tmp_image)
+
