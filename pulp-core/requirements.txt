@@ -1,14 +1,14 @@
 # modules to install in core container
-pulpcore==3.12.0
-pulp-file==1.6.1
-pulp-container==2.5.1
+pulpcore==3.12.1
+pulp-file==1.7.0
+pulp-container==2.5.2
 pulp-rpm==3.10.0
 pulp-deb==2.11.1
 # django-storages[boto3] gets magically expanded by pip freeze
 # but the [boto3] needs put back to work. Trust in "make update-requirements" :)
 #django-storages[boto3]==1.11.1
 # temporarily use Kong django-storages fork
-django-storages @ git+https://github.com/Kong/django-storages@b3119c982645e43e0bd57447663e408136bacbbc
+django-storages @ git+https://github.com/Kong/django-storages@32e8bef8f8fb4ad57b92eacc67c6e7a221b171f9
 ## The following requirements were added by pip freeze:
 aiodns==2.0.0
 aiofiles==0.6.0
@@ -17,8 +17,8 @@ async-timeout==3.0.1
 asyncio-throttle==1.0.2
 attrs==20.3.0
 backoff==1.10.0
-boto3==1.17.52
-botocore==1.20.52
+boto3==1.17.55
+botocore==1.20.54
 certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
@@ -57,7 +57,7 @@ multidict==5.1.0
 odfpy==1.4.1
 openpyxl==3.0.7
 pip==21.0.1
-productmd==1.31
+productmd==1.32
 psycopg2==2.8.6
 pycairo==1.20.0
 pycares==3.1.1
@@ -77,7 +77,7 @@ PyYAML==5.4.1
 redis==3.5.3
 requests==2.25.1
 rq==1.8.0
-s3transfer==0.3.7
+s3transfer==0.4.0
 setuptools==54.2.0
 six==1.15.0
 solv==0.7.17
