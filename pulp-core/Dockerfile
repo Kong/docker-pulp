@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM fedora:33 as build
+FROM fedora:34 as build
 ENV PYTHONUNBUFFERED 1
 
 # Install build dependencies
@@ -50,7 +50,7 @@ RUN for P in /opt/pulp/kong_patches/*; do \
     ; done
 
 ## Main image
-FROM fedora:33
+FROM fedora:34
 ENV PYTHONUNBUFFERED 1
 ENV PATH /opt/pulp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
