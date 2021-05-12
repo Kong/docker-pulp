@@ -24,7 +24,7 @@ jobs:
           releaseType: patch 
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Github Release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1.1.4
         if: steps['versioning']['outputs']['RETURN_STATUS'] == '0'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
