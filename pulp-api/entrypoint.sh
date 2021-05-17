@@ -17,6 +17,13 @@ echo "[INFO] Collecting static files"
 pulpcore-manager collectstatic --noinput
 
 echo "[INFO] Starting API server"
-gunicorn pulpcore.app.wsgi:application \
+
+declare -a args=()
+for arg in "$@"
+do
+  eval "args[${#args[*]}]=$arg"
+done
+
+gunicorn pulpcore.app.wsgi:application "${args[@]}" \
           --bind "0.0.0.0:${PULP_API_BIND_PORT}" \
           --access-logfile -

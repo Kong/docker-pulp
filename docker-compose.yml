@@ -16,6 +16,7 @@ services:
   api:
     image: pulp-api
     env_file: .env
+    command: ['--dogstatsd-tags=$$HOSTNAME']
     depends_on:
       - db
       - redis
