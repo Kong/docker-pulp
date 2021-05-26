@@ -24,6 +24,7 @@ do
   eval "args[${#args[*]}]=$arg"
 done
 
-gunicorn pulpcore.app.wsgi:application "${args[@]}" \
-          --bind "0.0.0.0:${PULP_API_BIND_PORT}" \
-          --access-logfile -
+exec gunicorn pulpcore.app.wsgi:application \
+              "${args[@]}" \
+              --bind "0.0.0.0:${PULP_API_BIND_PORT}" \
+              --access-logfile -
