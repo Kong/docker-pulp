@@ -47,4 +47,3 @@ update-requirements:
 	docker run --rm $(tmp_image) /opt/pulp/bin/pip freeze -l \
 		-r /opt/pulp/pulp-requirements.txt > requirements.txt
 	docker rmi $(tmp_image)
-

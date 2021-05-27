@@ -26,14 +26,15 @@ RUN dnf install -y \
       libmodulemd-devel \
       gobject-introspection-devel \
       cairo-gobject-devel \
-      zchunk-devel
+      zchunk-devel \
+    && dnf clean all
 
 # Create virtualenv
 RUN virtualenv -p python3 /opt/pulp
 
 # Ensure uptodate pip and wheel
 RUN /opt/pulp/bin/pip install -U \
-	pip setuptools wheel
+    pip setuptools wheel
 
 # Install pulp and plugins
 COPY requirements.txt /opt/pulp/pulp-requirements.txt

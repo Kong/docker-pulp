@@ -13,11 +13,12 @@ All of these images are using `pulp-core` as a base image.
 
 To run and configure Pulp, you have 2 options:
 
-1. Export `PULP_SETTINGS` to location with your configuration file and manage
-   it as host path od Kubernetes configmap.
-   Pulp is using [Dynaconf](https://dynaconf.readthedocs.io/en/latest/guides/examples.html)_ so you can use various formats.
-2. Use environment variables entirely to configure Pulp, we are going to use
-   this option.
+1. Export `PULP_SETTINGS` to location with your configuration file and
+   manage it as host path od Kubernetes configmap.  Pulp is using
+   [Dynaconf](https://dynaconf.readthedocs.io/en/latest/guides/examples.html)
+   so you can use various formats.
+1. Use environment variables entirely
+   to configure Pulp, we are going to use this option.
 
 ### Configuration options
 
@@ -81,4 +82,4 @@ mkdir -p .volume/pulp && chown 995:995 .volume/pulp
 docker-compose up
 ```
 
-Then you can access Pulp on http://localhost:24817/pulp/api/v3/
+Then you can access Pulp on `http://localhost:24817/pulp/api/v3/`

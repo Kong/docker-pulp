@@ -1,54 +1,55 @@
+---
 version: '2'
 services:
   db:
     image: postgres
     environment:
-      - POSTGRES_USER=pulp
-      - POSTGRES_PASSWORD=pulp
+    - POSTGRES_USER=pulp
+    - POSTGRES_PASSWORD=pulp
     ports:
-      - '127.0.0.1:5432:5432'
+    - 127.0.0.1:5432:5432
     volumes:
-      - ./.volume/postgres:/var/lib/postgresql/data
+    - ./.volume/postgres:/var/lib/postgresql/data
   redis:
     image: redis
     ports:
-      - '127.0.0.1:6379:6379'
+    - 127.0.0.1:6379:6379
   api:
     image: pulp-api
     env_file: .env
-    command: ['--dogstatsd-tags=$$HOSTNAME']
+    command: [--dogstatsd-tags=$$HOSTNAME]
     depends_on:
-      - db
-      - redis
+    - db
+    - redis
     ports:
-      - '24817:24817'
+    - 24817:24817
     volumes:
-      - ./.volume/pulp:/var/lib/pulp
+    - ./.volume/pulp:/var/lib/pulp
   content:
     image: pulp-content
     env_file: .env
     depends_on:
-      - db
-      - api
+    - db
+    - api
     ports:
-      - '24816:24816'
+    - 24816:24816
     volumes:
-      - ./.volume/pulp:/var/lib/pulp
+    - ./.volume/pulp:/var/lib/pulp
   resource-manager:
     image: pulp-resource-manager
     env_file: .env
     depends_on:
-      - db
-      - api
-      - redis
+    - db
+    - api
+    - redis
     volumes:
-      - ./.volume/pulp:/var/lib/pulp
+    - ./.volume/pulp:/var/lib/pulp
   worker:
     image: pulp-worker
     env_file: .env
     depends_on:
-      - db
-      - api
-      - redis
+    - db
+    - api
+    - redis
     volumes:
-      - ./.volume/pulp:/var/lib/pulp
+    - ./.volume/pulp:/var/lib/pulp

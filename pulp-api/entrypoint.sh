@@ -7,7 +7,7 @@ pulpcore-manager migrate --noinput
 
 if [[ -n $PULP_ADMIN_PASSWORD ]]; then
     echo "[INFO] Setting admin password"
-    pulpcore-manager reset-admin-password --password ${PULP_ADMIN_PASSWORD}
+    pulpcore-manager reset-admin-password --password "${PULP_ADMIN_PASSWORD}"
 fi
 
 echo "[INFO] handling any needed checksum migration"

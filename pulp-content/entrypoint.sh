@@ -10,5 +10,5 @@ echo "[INFO] Starting content server"
 exec gunicorn pulpcore.content:server \
               --bind "0.0.0.0:${PULP_CONTENT_BIND_PORT}" \
               --worker-class 'aiohttp.GunicornWebWorker' \
-              -w ${PULP_CONTENT_WORKERS} \
+              -w "${PULP_CONTENT_WORKERS}" \
               --access-logfile -

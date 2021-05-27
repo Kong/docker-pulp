@@ -1,28 +1,28 @@
+---
 # Basic set up for three package managers
-
 version: 2
 updates:
 
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    reviewers:
-      - "Kong/team-cloud"
+# Maintain dependencies for GitHub Actions
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: daily
+  reviewers:
+  - Kong/team-cloud
 
-  # Maintain dependencies for python
-  - package-ecosystem: "pip"
-    directory: "/pulp-core/"
-    schedule:
-      interval: "daily"
-    reviewers:
-      - "Kong/team-cloud"
+# Maintain dependencies for python
+- package-ecosystem: pip
+  directory: /pulp-core/
+  schedule:
+    interval: daily
+  reviewers:
+  - Kong/team-cloud
 
-  # Maintain dependencies for Docker
-  - package-ecosystem: "docker"
-    directory: "/pulp-core/"
-    schedule:
-      interval: "daily"
-    reviewers:
-      - "Kong/team-cloud"
+# Maintain dependencies for Docker
+- package-ecosystem: docker
+  directory: /pulp-core/
+  schedule:
+    interval: daily
+  reviewers:
+  - Kong/team-cloud
