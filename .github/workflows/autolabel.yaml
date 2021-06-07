@@ -8,7 +8,7 @@ jobs:
   autolabel:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@v3.0.0
+    - uses: actions/labeler@v3.0.1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - uses: TimonVS/pr-labeler-action@v3.1.0
