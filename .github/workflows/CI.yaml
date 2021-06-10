@@ -1,0 +1,76 @@
+---
+name: CI
+# should be "on release created"
+on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
+
+jobs:
+  autorelease:
+    name: Helm autorelease
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_WORKDIR: docker-pulp
+      HELM_WORKDIR: pulp-helm
+      DEV_VAL_PATH: charts/values-dev.yaml
+    steps:
+    - name: self-checkout
+      uses: actions/checkout@v2.3.4
+      with:
+        fetch-depth: 0
+        path: ${{ env.DOCKER_WORKDIR }}
+    - name: helm checkout
+      uses: actions/checkout@v2.3.4
+      with:
+        fetch-depth: 1
+        # ref: main
+        repository: ${{ secrets.HELM_REPO }} # should be "Kong/some-repo"
+        ssh-key: ${{ secrets.HELM_DEPLOY_KEY }}
+        persist-credentials: true
+        path: ${{ env.HELM_WORKDIR }}
+    - name: git setup
+      run: |
+        git config user.name "${{ GITHUB_REPOSITORY }}"
+        git config user.email github-actions@github.com
+    - name: enable ssh agent
+      uses: webfactory/ssh-agent@v0.5.2
+      with:
+        ssh-private-key: ${{ secrets.HELM_DEPLOY_KEY }}
+    - name: get lastest release
+      id: latestrelease
+      uses: pozetroninc/github-action-get-latest-release@master
+      with:
+        repository: ${{ github.repository }}
+        excludes: prerelease, draft
+
+    #- name: Update image version
+    #  uses: fjogeleit/yaml-update-action@master
+    #  with:
+    #    valueFile: ${{ env.DEV_VAL_PATH }}
+    #    proprtyPath: api.image.tag
+    - name: helm update YAML
+      id: helm-update
+      run: |
+        TAG=${{ steps.latestrelease.outputs.release }}
+        BRANCH=autorelease/bump-docker-$TAG
+        printf '::set-output name=BRANCH::%s\n' "$BRANCH"
+
+        printf '::group::Create branch\n'
+        git -C "$HELM_WORKDIR" checkout -b "$BRANCH"
+        printf '::endgroup::\n'
+
+        printf '::group::Update file\n'
+        yq() {
+          docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@";
+        }
+        for C in api content resource-manager worker
+        do
+          yq eval "${C}.image.tag = '$TAG'" "${HELM_WORKDIR}/${DEV_VAL_PATH}"
+        done
+        printf '::endgroup::\n'
+
+    - name: helm commit
+      run: |
+        git config user.name "${{ GITHUB_REPOSITORY }}"
+        git config user.email github-actions@github.com
+        git -C "$HELM_WORKDIR" commit "${DEV_VAL_PATH}"
+        git -C "$HELM_WORKDIR" push ${{ steps.helm-update.outputs.BRANCH }}
