@@ -1,6 +1,6 @@
 ---
 name: CI
-# should be "on release created"
+# should eventually be "on release created"
 on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
 
@@ -9,68 +9,54 @@ jobs:
     name: Helm autorelease
     runs-on: ubuntu-latest
     env:
-      DOCKER_WORKDIR: docker-pulp
-      HELM_WORKDIR: pulp-helm
-      DEV_VAL_PATH: charts/values-dev.yaml
+      DEV_VAL_FILE: charts/values-dev.yaml
     steps:
-    - name: self-checkout
-      uses: actions/checkout@v2.3.4
-      with:
-        fetch-depth: 0
-        path: ${{ env.DOCKER_WORKDIR }}
     - name: helm checkout
       uses: actions/checkout@v2.3.4
       with:
-        fetch-depth: 1
-        # ref: main
-        repository: ${{ secrets.HELM_REPO }} # should be "Kong/some-repo"
+        repository: ${{ secrets.HELM_REPOSITORY }} # should be "user/repo" format
         ssh-key: ${{ secrets.HELM_DEPLOY_KEY }}
-        persist-credentials: true
-        path: ${{ env.HELM_WORKDIR }}
-    - name: git setup
-      run: |
-        git -C "$HELM_WORKDIR" config --local user.name "$GITHUB_REPOSITORY"
-        git -C "$HELM_WORKDIR" config --local user.email github-actions@github.com
-    - name: enable ssh agent
-      uses: webfactory/ssh-agent@v0.5.2
-      with:
-        ssh-private-key: ${{ secrets.HELM_DEPLOY_KEY }}
     - name: get lastest release
       id: latestrelease
       uses: pozetroninc/github-action-get-latest-release@master
       with:
         repository: ${{ github.repository }}
         excludes: prerelease, draft
-
-    #- name: Update image version
-    #  uses: fjogeleit/yaml-update-action@master
-    #  with:
-    #    valueFile: ${{ env.DEV_VAL_PATH }}
-    #    proprtyPath: api.image.tag
-    - name: helm update YAML
-      id: helm-update
+    - name: set tag & branch name for future runs
       run: |
         TAG=${{ steps.latestrelease.outputs.release }}
-        BRANCH=autorelease/bump-docker-$TAG
-        printf '::set-output name=BRANCH::%s\n' "$BRANCH"
+        {
+          printf "TAG=$TAG\n"
+          printf "BRANCH=autorelease/bump-docker-$TAG\n"
+        } >> $GITHUB_ENV
 
-        printf '::group::Create branch\n'
-        git -C "$HELM_WORKDIR" checkout -b "$BRANCH"
-        printf '::endgroup::\n'
+    - name: enable ssh agent
+      uses: webfactory/ssh-agent@v0.5.2
+      with:
+        ssh-private-key: ${{ secrets.HELM_DEPLOY_KEY }}
+    - name: git branch setup
+      run: |
+        git config --local user.name "$GITHUB_REPOSITORY"
+        git config --local user.email github-actions@github.com
+        git checkout -b "$BRANCH"
+    - name: pre-commit setup
+      run: |
+        pip install pre-commit
+        pre-commit install-hooks
 
-        printf '::group::Update file\n'
-        yq() {
-          docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@";
-        }
-        for C in api content resource-manager worker
-        do
-          yq eval ".${C}.image.tag = \"$TAG\"" "${HELM_WORKDIR}/${DEV_VAL_PATH}"
-        done
-        printf '::endgroup::\n'
-
+    - name: helm update YAML
+      uses: devorbitus/yq-action-output@v1.0
+      with:
+        cmd: yq --inplace eval '.["api", "content", "resource-manager", "worker"].image.tag = env(TAG)' '${{ env.DEV_VAL_FILE }}'
+    - name: reformat YAML with pre-commit
+      run: |
+        # first run fails if it needs to reformat, so run twice if first fails
+        pre-commit run yamlfmt --files "$DEV_VAL_FILE" \
+        || pre-commit run yamlfmt --files "$DEV_VAL_FILE"
+    # might be able to use actions/checkout for push instead of the ssh agent
+    # https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
     - name: helm commit
       run: |
-        git -C "$HELM_WORKDIR" config --local user.name "$GITHUB_REPOSITORY"
-        git -C "$HELM_WORKDIR" config --local user.email github-actions@github.com
-        git -C "$HELM_WORKDIR" commit "${DEV_VAL_PATH}"
-        git -C "$HELM_WORKDIR" push ${{ steps.helm-update.outputs.BRANCH }}
+        git add "$DEV_VAL_FILE"
+        git commit -m 'Bump dev image to $TAG'
+        git push --set-upstream origin "$BRANCH"
