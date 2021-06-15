@@ -31,7 +31,7 @@ jobs:
         } >> $GITHUB_ENV
 
     - name: enable ssh agent
-      uses: webfactory/ssh-agent@v0.5.2
+      uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.HELM_DEPLOY_KEY }}
     - name: git branch setup
