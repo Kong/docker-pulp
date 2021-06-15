@@ -45,7 +45,7 @@ jobs:
         pre-commit install-hooks
 
     - name: helm update YAML
-      uses: devorbitus/yq-action-output@v1.0
+      uses: devorbitus/yq-action-output@v1.1
       with:
         cmd: yq --inplace eval '.["api", "content", "resource-manager", "worker"].image.tag = env(TAG)' '${{ env.DEV_VAL_FILE }}'
     - name: reformat YAML with pre-commit
