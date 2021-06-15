@@ -69,9 +69,8 @@ COPY sign-metadata.sh /opt/pulp/bin/sign-metadata
 # if not; consider a github scheduled action to check release version
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
-RUN chmod +x /usr/local/bin/tini
-
-RUN useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp
+RUN chmod +x /usr/local/bin/tini && \
+    useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp
 
 # TODO: mount=type=bind,from=build,source=/var/cache/dnf,target=/var/cache/dnf,rw
 # This won't work due to the "clean all", but removing that needs --squash
