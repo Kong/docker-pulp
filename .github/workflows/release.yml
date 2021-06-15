@@ -7,23 +7,100 @@ on:  # yamllint disable-line rule:truthy
     - .github/**
     branches:
     - main
+  pull_request:
+    paths-ignore:
+    - .github/**
+
+env:
+  BUILD_CACHE: ${{ GITHUB_WORKSPACE }}/../imagecache
+  CACHE_KEY: ${{ GITHUB_WORKFLOW }}  # hash the Dockerfile here
+  CORE_CACHEFILE: pulp_core.tar
+  CORE_CACHETAG: buildcache
 
 jobs:
-  release:
-    name: Create Release
+  build:
+    name: Build containers
     runs-on: ubuntu-latest
+    env:
+    - BUILD_TAG: ${{ github.job }}
+    - CACHE_TAG: ${{ env.CORE_CACHETAG }}
+    outputs:
+      cache_tag: ${{ env.BUILD_TAG }}
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - uses: actions/cache@2.1.6
+      id: cache
+      with:
+        path: ${{ env.BUILD_CACHE }}
+        key: ${{ env.CACHE_KEY   }}
+
+    - name: Import cached image
+      if: ${{ steps.cache.outputs.cache-hit }}
+      run: |
+        if -f [[ "$CORE_CACHEFILE" ]]
+        then
+          docker import "$CORE_CACHEFILE"
+        fi
+        true
+    - name: Build job-specific image
+      env:
+        DOCKER_BUILDKIT: 1
+        ORG: kong
+        TAG: ${{ env.BUILD_TAG }}
+        IS_PREBUILD: 1
+      run: |
+        make images
+    - name: Export image to cache
+      run: |
+        mkdir -p "$BUILD_CACHE"
+        # retag with common tag for future builds
+        docker tag "$ORG/pulp-core:$TAG" "$ORG/pulp-core:$CACHE_TAG"
+        docker export --output="$CORE_CACHEFILE" "$ORG/pulp-core:$CACHE_TAG"
+    - name: Export images for artifact
+      id: artifact_export
+      run: |
+        OUT=$( mktemp -d )
+        # export built images
+        for I in pulp-{api,content,worker,resource-manager}
+        do
+          docker export --output="$OUT/${I}.tar" "$ORG/${I}:$CACHE_TAG"
+        done
+        printf '::set-output name=imagedir::%s/\n' "$OUT"
+    - name: Save build artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: images
+        path: ${{ steps.artifact_export.outputs.imagedir }}
+
+  release:
+    name: Create Github Release
+    needs: build
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.versioning.outputs.version }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
       with:
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+        fetch-depth: 0 # need all refs for tag generation
+    - uses: actions/cache@2.1.6
+      with:
+        path: ${{ env.BUILD_CACHE }}
+        key: ${{ env.CACHE_KEY   }}
+
     - name: Auto Increment Semver Action
       uses: MCKanpolat/auto-semver-action@1.0.7
       id: versioning
       with:
         releaseType: patch
         github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit back
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        message: Release ${{ steps.versioning.outputs.version }}
+        branch: main
     - name: Create Github Release
       uses: actions/create-release@v1.1.4
       if: steps['versioning']['outputs']['RETURN_STATUS'] == '0'
@@ -35,40 +112,43 @@ jobs:
         body: Version ${{ steps.versioning.outputs.version }}
         draft: false
         prerelease: false
+
+  publish:
+    name: Publish Release
+    needs: release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag:
+        - ${{ jobs.release.outputs.tag }}
+        - latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - uses: actions/cache@2.1.6
+      id: cache
+      with:
+        path: ${{ env.BUILD_CACHE }}
+        key: ${{ env.CACHE_KEY   }}
     - name: Login to DockerHub
       uses: docker/login-action@v1.9.0
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Build tagged images
+    - name: Import cached image
+      if: ${{ steps.cache.outputs.cache-hit }}
+      run: |
+        docker import "$CORE_CACHEFILE"
+    - name: Build (retag) images
       env:
         DOCKER_BUILDKIT: 1
         ORG: kong
-        TAG: ${{ steps.versioning.outputs.version }}
+        TAG: ${{ matrix.tag }}
+        CACHE_TAG: ${{ jobs.build.cache_tag }}
       run: |
         make images
-    - name: Build latest images
-      env:
-        DOCKER_BUILDKIT: 1
-        ORG: kong
-        TAG: latest
-      run: |
-        make images
-    - name: Release latest images
+    - name: Publish images
       env:
         ORG: kong
-        TAG: latest
+        TAG: ${{ matrix.tag }}
       run: |
         make release
-    - name: Release tagged images
-      env:
-        ORG: kong
-        TAG: ${{ steps.versioning.outputs.version }}
-      run: |
-        make release
-    - name: Commit back
-      uses: actions-js/push@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        message: Release ${{ steps.versioning.outputs.version }}
-        branch: main

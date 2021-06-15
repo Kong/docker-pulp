@@ -10,9 +10,16 @@ endif
 
 # if we're running from github actions, always cache_from tag latest
 ifeq ($(GITHUB_ACTIONS),true)
-	cache_tag=latest
+	CACHE_TAG ?= latest
+	cache_tag=$(CACHE_TAG)
+	ifdef IS_PREBUILD
+		extra_arg=--build-arg BUILDKIT_INLINE_CACHE=1
+	else
+		extra_arg=
+	endif
 else
 	cache_tag=$(TAG)
+	extra_arg=
 endif
 
 .EXPORT_ALL_VARIABLES:
@@ -32,7 +39,7 @@ release: release-pulp-core \
 build-%:
 	$(eval IMAGE := $(patsubst build-%,%,$@))
 	cp -v .dockerignore $(IMAGE)/
-	cd $(IMAGE) && docker build --build-arg FROM_ORG="$(prefix)" --build-arg FROM_TAG="$(TAG)" --cache-from $(prefix)$(IMAGE):$(cache_tag) -t $(prefix)$(IMAGE):$(TAG) .
+	cd $(IMAGE) && docker buildx build --build-arg FROM_ORG="$(prefix)" --build-arg FROM_TAG="$(TAG)" $(extra_arg) --cache-from $(prefix)$(IMAGE):$(cache_tag) -t $(prefix)$(IMAGE):$(TAG) .
 
 release-%:
 	$(eval IMAGE := $(patsubst release-%,%,$@))
