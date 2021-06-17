@@ -2,6 +2,7 @@
 name: release
 
 on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
   push:
     paths-ignore:
     - .github/**
@@ -12,8 +13,8 @@ on:  # yamllint disable-line rule:truthy
     - .github/**
 
 env:
-  BUILD_CACHE: ${{ GITHUB_WORKSPACE }}/../imagecache
-  CACHE_KEY: ${{ GITHUB_WORKFLOW }}  # hash the Dockerfile here
+  BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache
+  CACHE_KEY: ${{ env.GITHUB_WORKFLOW }}  # TODO: hash the Dockerfile here
   CORE_CACHEFILE: pulp_core.tar
   CORE_CACHETAG: buildcache
 
