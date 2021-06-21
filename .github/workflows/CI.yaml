@@ -58,5 +58,5 @@ jobs:
     - name: helm commit
       run: |
         git add "$DEV_VAL_FILE"
-        git commit -m 'Bump dev image to $TAG'
+        git commit -m "Bump dev image to $TAG"
         git push --set-upstream origin "$BRANCH"
