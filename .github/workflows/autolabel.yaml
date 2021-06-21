@@ -2,7 +2,10 @@
 name: Pull Request Labeler
 
 on:  # yamllint disable-line rule:truthy
-  pull_request:
+  # note: security risk from this action.  Do not add
+  # actions in here which need a checkout of the repo,
+  # and do not use any caching in here.
+  pull_request_target:
 
 jobs:
   autolabel:
