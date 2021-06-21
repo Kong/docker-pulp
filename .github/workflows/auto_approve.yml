@@ -1,0 +1,19 @@
+---
+name: Auto approve
+
+on: # yamllint disable-line rule:truthy
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  auto-approve-github-actions:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+    steps:
+    - uses: hmarr/auto-approve-action@v2.1.0
+      #if: github.event.label.name == 'github_actions'
+      # could add a second job for non-actions PRs once the branch protection
+      #  requires a sucessful build
+      if: contains( github.event.pull_request.labels.*.name, 'github_actions')
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
