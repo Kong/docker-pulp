@@ -13,8 +13,9 @@ on:  # yamllint disable-line rule:truthy
     - .github/**
 
 env:
-  BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache
-  CACHE_KEY: ${{ env.GITHUB_WORKFLOW }}  # TODO: hash the Dockerfile here
+  #BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache # no env. contenxt at top level :/
+  BUILD_CACHE: /tmp/imagecache
+  CACHE_KEY: ${{ hashFiles("pulp-core/Dockerfile") }}
   CORE_CACHEFILE: pulp_core.tar
   CORE_CACHETAG: buildcache
 
