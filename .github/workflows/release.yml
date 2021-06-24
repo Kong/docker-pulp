@@ -16,7 +16,6 @@ env:
   #BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache # no env. contenxt at top level :/
   BUILD_CACHE: /tmp/imagecache
   CORE_CACHEFILE: pulp_core.tar
-  CORE_CACHETAG: buildcache
 
 jobs:
   build:
@@ -24,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_TAG: ${{ github.job }}
-      CACHE_TAG: ${{ env.CORE_CACHETAG }}
+      CACHE_TAG: buildcache
     outputs:
       cache_tag: ${{ env.BUILD_TAG }}
       cache_key: ${{ env.CACHE_KEY }}
