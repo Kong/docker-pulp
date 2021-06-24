@@ -15,7 +15,6 @@ on:  # yamllint disable-line rule:truthy
 env:
   #BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache # no env. contenxt at top level :/
   BUILD_CACHE: /tmp/imagecache
-  CACHE_KEY: ${{ hashFiles("pulp-core/Dockerfile") }}
   CORE_CACHEFILE: pulp_core.tar
   CORE_CACHETAG: buildcache
 
@@ -24,12 +23,24 @@ jobs:
     name: Build containers
     runs-on: ubuntu-latest
     env:
-    - BUILD_TAG: ${{ github.job }}
-    - CACHE_TAG: ${{ env.CORE_CACHETAG }}
+      BUILD_TAG: ${{ github.job }}
+      CACHE_TAG: ${{ env.CORE_CACHETAG }}
     outputs:
       cache_tag: ${{ env.BUILD_TAG }}
+      cache_key: ${{ env.CACHE_KEY }}
     steps:
     - uses: actions/checkout@v2.3.4
+    - name: calculate cache key
+      env:
+        FILE_TO_HASH: pulp-core/Dockerfile
+      run: |
+        if [[ -f "$FILE_TO_HASH" ]]
+        then
+          printf "CACHE_KEY=%s\n" '${{ hashFiles(${{ env.FILE_TO_HASH }}) }}' >> $GITHUB_ENV
+        else
+          echo "Misisng '$FILE_TO_HASH'; this will probably fail later but setting default key anyway"
+          printf "CACHE_KEY=HoorayForDanny\n" >> $GITHUB_ENV
+        fi
     - uses: actions/cache@2.1.6
       id: cache
       with:
@@ -79,6 +90,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
+    env:
+      CACHE_KEY: ${{ jobs.build.outputs.cache_key }}
     outputs:
       tag: ${{ steps.versioning.outputs.version }}
     steps:
@@ -119,6 +132,8 @@ jobs:
     name: Publish Release
     needs: release
     runs-on: ubuntu-latest
+    env:
+      CACHE_KEY: ${{ jobs.build.outputs.cache_key }}
     strategy:
       matrix:
         tag:
