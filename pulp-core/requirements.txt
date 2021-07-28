@@ -23,7 +23,7 @@ certifi==2021.5.30
 cffi==1.14.5
 chardet==4.0.0
 click==8.0.1
-createrepo-c==0.17.1.post1
+createrepo-c==0.17.4
 cryptography==3.4.7
 defusedxml==0.7.1
 diff-match-patch==20200713
