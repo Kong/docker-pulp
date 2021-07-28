@@ -136,7 +136,7 @@ jobs:
 
   publish:
     name: Publish Release
-    needs: [build, release] 
+    needs: [build, release]
     runs-on: ubuntu-latest
     strategy:
       matrix:
