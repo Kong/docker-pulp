@@ -2,7 +2,7 @@
 pulpcore==3.12.1
 pulp-file==1.7.0
 pulp-container==2.5.2
-pulp-rpm==3.10.0
+pulp-rpm==3.14.0
 pulp-deb==2.11.1
 # django-storages[boto3] gets magically expanded by pip freeze
 # but the [boto3] needs put back to work. Trust in "make update-requirements" :)
