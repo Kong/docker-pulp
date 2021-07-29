@@ -20,7 +20,7 @@ backoff==1.10.0
 boto3==1.17.89
 botocore==1.20.89
 certifi==2021.5.30
-cffi==1.14.5
+cffi==1.14.6
 chardet==4.0.0
 click==8.0.1
 createrepo-c==0.17.4
