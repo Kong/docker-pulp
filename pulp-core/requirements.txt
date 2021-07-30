@@ -67,7 +67,7 @@ pygtrie==2.4.2
 pyjwkest==1.4.2
 PyJWT==1.7.1
 pyparsing==2.4.7
-pyrsistent==0.17.3
+pyrsistent==0.18.0
 python-dateutil==2.8.1
 python-debian==0.1.39
 python-gnupg==0.4.7
