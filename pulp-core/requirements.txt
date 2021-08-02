@@ -75,7 +75,7 @@ pytz==2021.1
 PyYAML==5.4.1
 redis==3.5.3
 requests==2.26.0
-rq==1.8.1
+rq==1.9.0
 s3transfer==0.4.2
 six==1.16.0
 solv==0.7.17
