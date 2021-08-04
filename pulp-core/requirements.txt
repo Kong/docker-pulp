@@ -1,5 +1,5 @@
 # modules to install in core container
-pulpcore==3.12.1
+pulpcore==3.14.3
 pulp-file==1.7.0
 pulp-container==2.5.2
 pulp-rpm==3.10.0
