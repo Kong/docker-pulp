@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # patch pulp in a way that'll remain visible from resulting container
 RUN mkdir -p /opt/pulp/kong_patches/
-COPY patches/* /opt/pulp/kong_patches/
+COPY patches/*.patch /opt/pulp/kong_patches/
 # hopefully there's just one python 3 site-packages...
 RUN for P in /opt/pulp/kong_patches/*; do \
     patch --verbose -p1 -i "$P" \
