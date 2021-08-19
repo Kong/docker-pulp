@@ -35,7 +35,7 @@ jobs:
       env:
         FILE_TO_HASH: pulp-core/Dockerfile
       run: |
-        if [[ -f "$FILE_TO_HASH" ]]
+        if [[ -f "$FILE_TO_HASH" && -r "$FILE_TO_HASH" ]]
         then
           # you can't use the env context as an arg for hashFiles, but it just does a sha256 :/
           printf "CACHE_KEY=pulp.%s\n" $(sha256sum "$FILE_TO_HASH" | awk '$0=$1') >> $GITHUB_ENV
@@ -53,7 +53,7 @@ jobs:
       if: ${{ steps.cache.outputs.cache-hit }}
       run: |
         OUTFILE="$BUILD_CACHE/$CORE_CACHEFILE"
-        if [[ -f "$OUTFILE" ]]
+        if [[ -f "$OUTFILE" && -r "$OUTFILE" ]]
         then
           printf "Importing $OUTFILE\n"
           docker import "$OUTFILE"
@@ -158,7 +158,13 @@ jobs:
     - name: Import cached image
       if: ${{ steps.cache.outputs.cache-hit }}
       run: |
-        docker import "$CORE_CACHEFILE"
+        if [[ -f "$CORE_CACHEFILE" && -r "$CORE_CACHEFILE" ]]
+        then
+          docker import "$CORE_CACHEFILE"
+        else
+          printf "$CORE_CACHEFILE not found? Weird. \n"
+          ls -a "$( dirname "$CORE_CACHEFILE" )"
+        fi
     - name: Build (retag) images
       env:
         DOCKER_BUILDKIT: 1
