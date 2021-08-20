@@ -70,7 +70,8 @@ COPY sign-metadata.sh /opt/pulp/bin/sign-metadata
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
 RUN chmod +x /usr/local/bin/tini && \
-    useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp
+    useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp && \
+    mkdir -p /var/lib/pulp/tmp && chown pulp /var/lib/pulp/tmp
 
 # TODO: mount=type=bind,from=build,source=/var/cache/dnf,target=/var/cache/dnf,rw
 # This won't work due to the "clean all", but removing that needs --squash
