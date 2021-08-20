@@ -7,7 +7,7 @@ Pulp installation consists of 4 containers:
 - pulp-resource-manager
 - pulp-worker
 
-All of these images are using `pulp-core` as a base image.
+All of these images use `pulp-core` as a base image.
 
 ## Configuration
 
