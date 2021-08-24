@@ -27,7 +27,7 @@ chardet==4.0.0
 charset-normalizer==2.0.4
 click==8.0.1
 createrepo-c==0.17.4
-cryptography==3.4.7
+cryptography==3.4.8
 defusedxml==0.7.1
 diff-match-patch==20200713
 Django==2.2.24
