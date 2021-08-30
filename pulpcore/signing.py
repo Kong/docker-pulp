@@ -15,7 +15,7 @@ with open("/tmp/public.key") as key:
                 name=service_name,
                 public_key=key.read(),
                 pubkey_fingerprint=fingerprint,
-                script="/opt/pulp/bin/sign-metadata",
+                script="/app/venv/bin/sign-metadata",
             )
         else:
             print(f"Signing service {service_name} already present")

@@ -13,9 +13,7 @@ if [[ -r "$GPG_KEY" ]]; then
 
     echo -e "5\ny\n" | gpg --batch --pinentry-mode loopback --yes --no-tty --command-fd 0 --expert --edit-key "$(cat /tmp/public.fpr)" trust
 
-    pulpcore-manager shell < /opt/pulp/lib/register-signing-api.py
+    pulpcore-manager shell < /app/venv/lib/register-signing-api.py
 fi
 
-REDIS_URL=${PULP_REDIS_URL:-"localhost:6379"}
-WORKER_NAME=${WORKER_NAME:-"worker@%h"}
-exec rq worker --url "$REDIS_URL" -n "$WORKER_NAME" -w 'pulpcore.tasking.worker.PulpWorker' --disable-job-desc-logging
+exec pulpcore-worker

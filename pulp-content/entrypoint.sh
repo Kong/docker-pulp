@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+mkdir -p /var/lib/pulp/tmp
+
 PULP_CONTENT_BIND_PORT=${PULP_CONTENT_BIND_PORT:-24816}
 PULP_CONTENT_WORKERS=${PULP_CONTENT_WORKERS:-2}
 
@@ -14,9 +16,4 @@ do
   eval "args[${#args[*]}]=$arg"
 done
 
-exec gunicorn pulpcore.content:server \
-              "${args[@]}" \
-              --bind "0.0.0.0:${PULP_CONTENT_BIND_PORT}" \
-              --worker-class 'aiohttp.GunicornWebWorker' \
-              -w "${PULP_CONTENT_WORKERS}" \
-              --access-logfile -
+exec pulp-content
