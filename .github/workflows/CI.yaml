@@ -1,8 +1,12 @@
 ---
 name: CI
-# should eventually be "on release created"
 on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
+  release:
+    # published works for draft, pre-release, and release
+    # prereleased does not fire for draft->pre-release
+    # released is just for a regular release
+    types: [released, deleted]
 
 jobs:
   autorelease:

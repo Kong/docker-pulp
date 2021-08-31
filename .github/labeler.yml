@@ -7,8 +7,13 @@ github_actions:
 
 python:
 - '**/*.py'
-- /pulp-core/requirements.txt
-- /Makefile
+- pulp-core/requirements.txt
 
 docker:
 - pulp-*/**
+
+build:
+- Makefile
+- docker-compose.yaml
+- '*/Dockerfile'
+- pulp-core/patches/**

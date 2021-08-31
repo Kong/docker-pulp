@@ -1,3 +1,4 @@
 ---
 bug: bug/*
 feature: [feature/*, feat/*]
+core_pulp_modules: [dependabot/pip/pulp-core/pulpcore-*, dependabot/pip/pulp-core/pulp-*-*]
