@@ -27,7 +27,7 @@ chardet==4.0.0
 charset-normalizer==2.0.4
 click==8.0.1
 createrepo-c==0.17.4
-cryptography==3.4.7
+cryptography==3.4.8
 defusedxml==0.7.1
 diff-match-patch==20200713
 Django==2.2.24
@@ -85,7 +85,7 @@ six==1.16.0
 solv==0.7.19
 sqlparse==0.4.1
 tablib==3.0.0
-typing-extensions==3.10.0.0
+typing-extensions==3.10.0.2
 uritemplate==3.0.1
 url-normalize==1.4.3
 urllib3==1.26.6
