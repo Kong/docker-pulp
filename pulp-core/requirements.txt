@@ -26,7 +26,7 @@ cffi==1.14.6
 chardet==4.0.0
 charset-normalizer==2.0.5
 click==8.0.1
-createrepo-c==0.17.5
+createrepo-c==0.17.6
 cryptography==3.4.8
 defusedxml==0.7.1
 diff-match-patch==20200713
