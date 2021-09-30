@@ -35,7 +35,7 @@ django-currentuser==0.5.3
 django-filter==2.4.0
 django-guardian==2.4.0
 django-guid==2.2.1
-django-import-export==2.5.0
+django-import-export==2.6.1
 django-lifecycle==0.9.1
 django-readonly-field==1.0.5
 djangorestframework==3.12.4
