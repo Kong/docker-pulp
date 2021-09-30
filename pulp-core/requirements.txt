@@ -52,7 +52,7 @@ idna==3.2
 inflection==0.5.1
 Jinja2==3.0.1
 jmespath==0.10.0
-jsonschema==3.2.0
+jsonschema==4.0.1
 libcomps==0.1.15.post1
 lxml==4.6.3
 MarkupPy==1.14
