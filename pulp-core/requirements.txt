@@ -82,7 +82,7 @@ requests==2.26.0
 rq==1.8.1
 s3transfer==0.5.0
 six==1.16.0
-solv==0.7.19
+solv==0.7.20
 sqlparse==0.4.2
 tablib==3.0.0
 typing-extensions==3.10.0.2
