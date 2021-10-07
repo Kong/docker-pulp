@@ -19,7 +19,7 @@ async-timeout==3.0.1
 asyncio-throttle==1.0.2
 attrs==21.2.0
 backoff==1.10.0
-boto3==1.18.54
+boto3==1.18.56
 botocore==1.21.54
 certifi==2021.5.30
 cffi==1.14.6
