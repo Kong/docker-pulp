@@ -1,7 +1,7 @@
 # modules to install in core container
 pulpcore==3.14.7
 pulp-file==1.8.2
-pulp-container==2.8.1
+#pulp-container==2.8.1
 pulp-rpm==3.14.6
 pulp-deb==2.14.1
 # django-storages[boto3] gets magically expanded by pip freeze
@@ -52,7 +52,7 @@ idna==3.2
 inflection==0.5.1
 Jinja2==3.0.2
 jmespath==0.10.0
-jsonschema==4.0.1
+jsonschema==4.1.0
 libcomps==0.1.15.post1
 lxml==4.6.3
 MarkupPy==1.14
