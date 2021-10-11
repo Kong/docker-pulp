@@ -20,7 +20,7 @@ asyncio-throttle==1.0.2
 attrs==21.2.0
 backoff==1.10.0
 boto3==1.18.57
-botocore==1.21.57
+botocore==1.21.58
 certifi==2021.5.30
 cffi==1.14.6
 chardet==4.0.0
@@ -52,7 +52,7 @@ idna==3.2
 inflection==0.5.1
 Jinja2==3.0.2
 jmespath==0.10.0
-jsonschema==4.0.1
+jsonschema==4.1.0
 libcomps==0.1.15.post1
 lxml==4.6.3
 MarkupPy==1.14
