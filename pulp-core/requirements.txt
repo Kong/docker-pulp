@@ -20,7 +20,7 @@ asyncio-throttle==1.0.2
 attrs==21.2.0
 backoff==1.10.0
 boto3==1.18.59
-botocore==1.21.59
+botocore==1.21.60
 certifi==2021.10.8
 cffi==1.14.6
 chardet==4.0.0
@@ -48,7 +48,7 @@ ecdsa==0.13.3
 et-xmlfile==1.1.0
 future==0.18.2
 gunicorn==20.1.0
-idna==3.2
+idna==3.3
 inflection==0.5.1
 Jinja2==3.0.2
 jmespath==0.10.0
