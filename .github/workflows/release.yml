@@ -115,10 +115,12 @@ jobs:
       id: versioning
       with:
         releaseType: patch
+        # this is a read-only action, I think, so either token is ok
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Commit back
       uses: actions-js/push@master
       with:
+        # commit back with Github token to avoid retriggering actions
         github_token: ${{ secrets.GITHUB_TOKEN }}
         message: Release ${{ steps.versioning.outputs.version }}
         branch: main
@@ -126,7 +128,8 @@ jobs:
       uses: actions/create-release@v1.1.4
       if: steps['versioning']['outputs']['RETURN_STATUS'] == '0'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # release with PAT to trigger more actions
+        GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
         release_name: ${{ steps.versioning.outputs.version }}
