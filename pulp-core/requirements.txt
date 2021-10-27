@@ -84,7 +84,7 @@ s3transfer==0.5.0
 six==1.16.0
 solv==0.7.20
 sqlparse==0.4.2
-tablib==3.0.0
+tablib==3.1.0
 typing-extensions==3.10.0.2
 uritemplate==4.1.1
 url-normalize==1.4.3
