@@ -30,7 +30,7 @@ jobs:
       cache_tag: ${{ env.CACHE_TAG }}
       cache_key: ${{ env.CACHE_KEY }}
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2.4.0
     - name: calculate cache key
       env:
         FILE_TO_HASH: pulp-core/Dockerfile
@@ -102,7 +102,7 @@ jobs:
       tag: ${{ steps.versioning.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.3.5
+      uses: actions/checkout@v2.4.0
       with:
         fetch-depth: 0 # need all refs for tag generation
     - uses: actions/cache@v2.1.6
@@ -147,7 +147,7 @@ jobs:
         - ${{ needs.release.outputs.tag }}
         - latest
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2.4.0
     - uses: actions/cache@v2.1.6
       id: cache
       with:
