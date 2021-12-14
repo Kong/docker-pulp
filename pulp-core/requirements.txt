@@ -54,7 +54,7 @@ Jinja2==3.0.2
 jmespath==0.10.0
 jsonschema==4.1.0
 libcomps==0.1.15.post1
-lxml==4.6.3
+lxml==4.7.1
 MarkupPy==1.14
 MarkupSafe==2.0.1
 multidict==5.2.0
