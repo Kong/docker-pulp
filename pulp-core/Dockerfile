@@ -89,7 +89,6 @@ RUN --mount=type=cache,target=/var/cache/dnf \
       gobject-introspection \
       expat \
       zchunk-libs \
-      compat-openssl10 \
     && dnf clean all
 
 WORKDIR /var/lib/pulp
