@@ -30,7 +30,7 @@ cryptography==3.4.8
 defusedxml==0.7.1
 Deprecated==1.2.13
 diff-match-patch==20200713
-Django==3.2.10
+Django==3.2.12
 django-currentuser==0.5.3
 django-filter==2.4.0
 django-guardian==2.4.0
