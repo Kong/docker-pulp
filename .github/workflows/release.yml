@@ -26,40 +26,29 @@ jobs:
       # use per-run tag for build, but consistent tag for cache purposes
       BUILD_TAG: ${{ github.job }}.${{ github.run_id }}
       CACHE_TAG: buildcache
+      PRIOT_ART: "latest_${{ env.IMAGE_ARTIFACT }}"
     outputs:
       cache_tag: ${{ env.CACHE_TAG }}
-      cache_key: ${{ env.CACHE_KEY }}
     steps:
     - uses: actions/checkout@v3.0.0
-    - name: calculate cache key
-      env:
-        FILE_TO_HASH: pulp-core/Dockerfile
-      run: |
-        if [[ -f "$FILE_TO_HASH" && -r "$FILE_TO_HASH" ]]
-        then
-          # you can't use the env context as an arg for hashFiles, but it just does a sha256 :/
-          printf "CACHE_KEY=pulp.%s\n" $(sha256sum "$FILE_TO_HASH" | awk '$0=$1') >> $GITHUB_ENV
-        else
-          echo "Misisng '$FILE_TO_HASH'; this will probably fail later but setting default key anyway"
-          printf "CACHE_KEY=HoorayForDanny\n" >> $GITHUB_ENV
-        fi
-    - uses: actions/cache@v3.0.2
-      id: cache
-      with:
-        path: ${{ env.BUILD_CACHE }}
-        key: ${{ env.CACHE_KEY   }}
 
-    - name: Import cached image
-      if: ${{ steps.cache.outputs.cache-hit }}
+    - name: fetch images from latest release
+      uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        file: ${{ env.IMAGE_ARTIFACT }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: ${{ env.PRIOT_ART }}
+    - name: Import latest release images
       run: |
-        OUTFILE="$BUILD_CACHE/$CORE_CACHEFILE"
+        OUTFILE="$PRIOT_ART"
         if [[ -f "$OUTFILE" && -r "$OUTFILE" ]]
         then
           printf "Importing $OUTFILE\n"
-          docker import "$OUTFILE"
+          docker load --input "$OUTFILE"
         fi
         docker images
         true
+
     - name: Build job-specific image
       env:
         DOCKER_BUILDKIT: 1
@@ -73,16 +62,6 @@ jobs:
         do
           printf "%s=%s\n" "$V" "${!V}"
         done >> $GITHUB_ENV
-    - name: Export image to cache
-      # don't bother exporting, since the cache won't be updated if hit :/
-      #if: !${{ steps.cache.outputs.cache-hit }}
-      run: |
-        mkdir -p "$BUILD_CACHE"
-        cd "$BUILD_CACHE"
-        # retag with common tag for future builds
-        SPECIAL_IMAGE="$ORG/pulp-core:$CACHE_TAG"
-        docker tag "$ORG/pulp-core:$TAG" "$SPECIAL_IMAGE"
-        docker save --output="$CORE_CACHEFILE" "$SPECIAL_IMAGE"
     - name: Export images for artifact
       id: artifact_export
       run: |
@@ -105,11 +84,6 @@ jobs:
       uses: actions/checkout@v3.0.0
       with:
         fetch-depth: 0 # need all refs for tag generation
-    - uses: actions/cache@v3.0.2
-      with:
-        path: ${{ env.BUILD_CACHE }}
-        key: ${{ needs.build.outputs.cache_key }}
-
     - name: Auto Increment Semver Action
       uses: MCKanpolat/auto-semver-action@1.0.7
       id: versioning
@@ -148,11 +122,6 @@ jobs:
         - latest
     steps:
     - uses: actions/checkout@v3.0.0
-    - uses: actions/cache@v3.0.2
-      id: cache
-      with:
-        path: ${{ env.BUILD_CACHE }}
-        key: ${{ needs.build.outputs.cache_key }}
     - name: Login to DockerHub
       uses: docker/login-action@v1.14.1
       with:
