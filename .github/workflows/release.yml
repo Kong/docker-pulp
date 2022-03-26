@@ -25,29 +25,28 @@ jobs:
     env:
       # use per-run tag for build, but consistent tag for cache purposes
       BUILD_TAG: ${{ github.job }}.${{ github.run_id }}
-      CACHE_TAG: buildcache
       PRIOT_ART: "latest_${{ env.IMAGE_ARTIFACT }}"
     outputs:
-      cache_tag: ${{ env.CACHE_TAG }}
+      tag: ${{ env.BUILD_TAG }}
     steps:
     - uses: actions/checkout@v3.0.0
 
-    - name: fetch images from latest release
-      uses: dsaltares/fetch-gh-release-asset@master
-      with:
-        file: ${{ env.IMAGE_ARTIFACT }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-        target: ${{ env.PRIOT_ART }}
-    - name: Import latest release images
-      run: |
-        OUTFILE="$PRIOT_ART"
-        if [[ -f "$OUTFILE" && -r "$OUTFILE" ]]
-        then
-          printf "Importing $OUTFILE\n"
-          docker load --input "$OUTFILE"
-        fi
-        docker images
-        true
+    # - name: fetch images from latest release
+    #   uses: dsaltares/fetch-gh-release-asset@master
+    #   with:
+    #     file: ${{ env.IMAGE_ARTIFACT }}
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     target: ${{ env.PRIOT_ART }}
+    # - name: Import latest release images
+    #   run: |
+    #     OUTFILE="$PRIOT_ART"
+    #     if [[ -f "$OUTFILE" && -r "$OUTFILE" ]]
+    #     then
+    #       printf "Importing $OUTFILE\n"
+    #       docker load --input "$OUTFILE"
+    #     fi
+    #     docker images
+    #     true
 
     - name: Build job-specific image
       env:
@@ -127,29 +126,28 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Import cached image
-      if: ${{ steps.cache.outputs.cache-hit }}
+    - name: Download image artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: images
+        path: ${{ env.IMAGE_ARTIFACT }}
+    - name: Import image artifact
       run: |
-        if [[ -f "$CORE_CACHEFILE" && -r "$CORE_CACHEFILE" ]]
+        if [[ -f "$IMAGE_ARTIFACT" && -r "$IMAGE_ARTIFACT" ]]
         then
-          docker import "$CORE_CACHEFILE"
+          docker load --input "$IMAGE_ARTIFACT"
         else
-          printf "$CORE_CACHEFILE not found? Weird. \n"
-          ls -a "$( dirname "$CORE_CACHEFILE" )"
+          printf "$IMAGE_ARTIFACT not found? Weird. \n"
+          ls -a "$( dirname "$IMAGE_ARTIFACT" )"
         fi
     - name: Build (retag) images
       env:
         DOCKER_BUILDKIT: 1
         ORG: kong
         TAG: ${{ matrix.tag }}
-        CACHE_TAG: ${{ needs.build.cache_tag }}
+        CACHE_TAG: ${{ needs.build.tag }}
       run: |
         make images
-        # make these vars usable in later steps
-        for V in ORG TAG
-        do
-          printf "%s=%s\n" "$V" "${!V}"
-        done >> $GITHUB_ENV
     - name: Publish images
       run: |
         make release
