@@ -25,7 +25,7 @@ jobs:
     env:
       # use per-run tag for build, but consistent tag for cache purposes
       BUILD_TAG: ${{ github.job }}.${{ github.run_id }}
-      PRIOT_ART: "latest_${{ env.IMAGE_ARTIFACT }}"
+      PRIOR_ART: latest_${{ env.IMAGE_ARTIFACT }}
     outputs:
       tag: ${{ env.BUILD_TAG }}
     steps:
@@ -36,10 +36,10 @@ jobs:
     #   with:
     #     file: ${{ env.IMAGE_ARTIFACT }}
     #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     target: ${{ env.PRIOT_ART }}
+    #     target: ${{ env.PRIOR_ART }}
     # - name: Import latest release images
     #   run: |
-    #     OUTFILE="$PRIOT_ART"
+    #     OUTFILE="$PRIOR_ART"
     #     if [[ -f "$OUTFILE" && -r "$OUTFILE" ]]
     #     then
     #       printf "Importing $OUTFILE\n"
