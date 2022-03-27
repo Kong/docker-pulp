@@ -9,8 +9,8 @@ on:  # yamllint disable-line rule:truthy
     branches:
     - main
   pull_request:
-    paths-ignore:
-    - .github/**
+      #    paths-ignore:
+      #    - .github/**
 
 env:
   #BUILD_CACHE: ${{ env.GITHUB_WORKSPACE }}/../imagecache # no env. contenxt at top level :/
