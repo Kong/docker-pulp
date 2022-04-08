@@ -16,7 +16,7 @@ jobs:
       DEV_VAL_FILE: charts/values-dev.yaml
     steps:
     - name: helm checkout
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3.0.0
       with:
         repository: ${{ secrets.HELM_REPOSITORY }} # should be "user/repo" format
         ssh-key: ${{ secrets.HELM_DEPLOY_KEY }}
