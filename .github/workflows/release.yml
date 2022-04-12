@@ -43,7 +43,7 @@ jobs:
           echo "Misisng '$FILE_TO_HASH'; this will probably fail later but setting default key anyway"
           printf "CACHE_KEY=HoorayForDanny\n" >> $GITHUB_ENV
         fi
-    - uses: actions/cache@v2.1.7
+    - uses: actions/cache@v3.0.2
       id: cache
       with:
         path: ${{ env.BUILD_CACHE }}
@@ -105,7 +105,7 @@ jobs:
       uses: actions/checkout@v3.0.0
       with:
         fetch-depth: 0 # need all refs for tag generation
-    - uses: actions/cache@v2.1.7
+    - uses: actions/cache@v3.0.2
       with:
         path: ${{ env.BUILD_CACHE }}
         key: ${{ needs.build.outputs.cache_key }}
@@ -148,7 +148,7 @@ jobs:
         - latest
     steps:
     - uses: actions/checkout@v3.0.0
-    - uses: actions/cache@v2.1.7
+    - uses: actions/cache@v3.0.2
       id: cache
       with:
         path: ${{ env.BUILD_CACHE }}
