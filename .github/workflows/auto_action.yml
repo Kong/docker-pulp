@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
     steps:
-    - uses: hmarr/auto-approve-action@v2.1.0
+    - uses: hmarr/auto-approve-action@v2.2.1
       #if: github.event.label.name == 'github_actions'
       if: >-
         contains( github.event.pull_request.labels.*.name, 'github_actions')
