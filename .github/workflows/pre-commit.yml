@@ -21,6 +21,6 @@ jobs:
         curl -L -s -o $GITHUB_WORKSPACE/bin/shfmt https://github.com/mvdan/sh/releases/download/v3.1.2/shfmt_v3.1.2_linux_amd64
         chmod +x $GITHUB_WORKSPACE/bin/shfmt
         echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-    - uses: pre-commit/action@v2.0.3
+    - uses: pre-commit/action@v3.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
