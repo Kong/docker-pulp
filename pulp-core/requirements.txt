@@ -61,7 +61,7 @@ openpyxl==3.0.9
 productmd==1.33
 psycopg2==2.9.2
 pycairo==1.20.1
-pycares==4.1.2
+pycares==4.2.2
 pycparser==2.21
 PyGObject==3.42.0
 pygtrie==2.4.2
