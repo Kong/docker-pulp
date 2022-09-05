@@ -11,7 +11,7 @@ pulp-deb==2.16.0
 django-storages @ git+https://github.com/Kong/django-storages@32e8bef8f8fb4ad57b92eacc67c6e7a221b171f9
 ## The following requirements were added by pip freeze:
 aiodns==3.0.0
-aiofiles==0.7.0
+aiofiles==22.1.0
 aiohttp==3.7.4.post0
 aiohttp-xmlrpc==1.3.2
 aioredis==2.0.0
