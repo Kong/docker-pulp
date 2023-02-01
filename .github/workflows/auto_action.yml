@@ -17,7 +17,7 @@ jobs:
       ||
       github.actor == 'dependabot-preview[bot]'
     steps:
-    - uses: hmarr/auto-approve-action@v2.2.1
+    - uses: hmarr/auto-approve-action@v3.1.0
       if: >-
         contains( github.event.pull_request.labels.*.name, 'github_actions')
         ||
