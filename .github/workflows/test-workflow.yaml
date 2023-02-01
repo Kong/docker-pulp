@@ -1,0 +1,9 @@
+name: Test Workflow
+on: pull_request
+jobs:
+  test-job:
+    name: Update Dependabot PRs
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update Dependabot PRs
+      uses: Kong/shared-actions/update-dependabot-prs@feat/dependabot-pr-updater
