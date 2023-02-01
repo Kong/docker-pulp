@@ -48,7 +48,7 @@ et-xmlfile==1.1.0
 gunicorn==20.1.0
 idna==3.3
 inflection==0.5.1
-Jinja2==3.0.3
+Jinja2==3.1.2
 jmespath==0.10.0
 jsonschema==4.3.2
 libcomps==0.1.15.post1
