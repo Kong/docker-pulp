@@ -1,3 +1,10 @@
+🚧🚧🚧
+
+In July of 2023, Kong adopted Cloudsmith for hosting product packages.
+This repo is not longer being used nor maintained by Kong Inc.
+
+🚧🚧🚧
+
 # Pulp Docker images
 
 Pulp installation consists of 4 containers:
